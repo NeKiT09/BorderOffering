@@ -1,0 +1,5 @@
+name: BorderOffering
+version: '0.0.1'
+main: org.zawarka.borderOffering.BorderOffering
+api-version: '1.19'
+authors: [ Zawarka03 ]
