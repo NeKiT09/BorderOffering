@@ -13,4 +13,4 @@ object WorldBorderExpandingInfo {
     fun isExpanding(world: World) = isBorderExpanding[world] ?: false
 }
 
-fun World.isBorderExpanding() = WorldBorderExpandingInfo.isExpanding(this)
+fun World.isWorldBorderExpanding() = WorldBorderExpandingInfo.isExpanding(this)

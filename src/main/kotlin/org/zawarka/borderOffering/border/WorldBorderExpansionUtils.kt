@@ -11,6 +11,6 @@ object WorldBorderExpansionUtils {
     }
 }
 
-fun World.expandBorder(offset: Double, seconds: Long = 0){
+fun World.expandWorldBorder(offset: Double, seconds: Long = 0){
     WorldBorderExpansionUtils.expandBorder(this, offset, seconds)
 }

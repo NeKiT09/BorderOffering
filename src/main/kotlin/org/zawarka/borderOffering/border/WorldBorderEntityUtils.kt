@@ -1,4 +1,4 @@
-package org.zawarka.borderOffering.utils
+package org.zawarka.borderOffering.border
 
 import org.bukkit.entity.Entity
 import kotlin.math.abs

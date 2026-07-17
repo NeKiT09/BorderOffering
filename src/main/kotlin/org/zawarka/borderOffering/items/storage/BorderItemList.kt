@@ -1,8 +1,15 @@
-package org.zawarka.borderOffering.items
+package org.zawarka.borderOffering.items.storage
 
 import org.bukkit.Material
 
 data class BorderItemList(private val map: MutableMap<Material, Int> = mutableMapOf()) {
+
+
+    companion object{
+        fun empty() : BorderItemList{
+            return BorderItemList()
+        }
+    }
 
     operator fun contains(material: Material) : Boolean{
         return map.containsKey(material)
@@ -22,11 +29,9 @@ data class BorderItemList(private val map: MutableMap<Material, Int> = mutableMa
         return map
     }
 
+    fun materials() : Set<Material> = map.keys
+
     fun clear(){
         map.clear()
     }
 }
-
-
-fun BorderItemList?.getOrDefault(material: Material, default: Int = 0) = this?.get(material) ?: default
-
