@@ -1,6 +1,9 @@
 package org.zawarka.borderOffering.border
 
+import org.bukkit.Location
 import org.bukkit.entity.Entity
+import org.bukkit.entity.TextDisplay
+import org.zawarka.borderOffering.border.WorldBorderEdgeUtils.isParallelToX
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -15,4 +18,8 @@ fun Entity.isNearWorldBorder(distance: Double = 4.0): Boolean {
     val distZ = abs(abs(location.z - cz) - halfSize)
 
     return min(distX, distZ) <= distance
+}
+
+fun Entity.snapAndAlignToBorder(offset: BorderOffset = BorderOffset()) {
+    teleport(WorldBorderEdgeUtils.getClosestBorderPointWithRotation(world.worldBorder, location, offset))
 }

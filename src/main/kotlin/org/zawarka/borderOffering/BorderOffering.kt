@@ -5,6 +5,10 @@ import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 import org.zawarka.borderOffering.border.WorldBorderMovementListener
 import org.zawarka.borderOffering.items.BorderItemListener
+import org.zawarka.borderOffering.items.progress.ItemProgressListener
+import org.zawarka.borderOffering.items.storage.BorderItemList
+import org.zawarka.borderOffering.items.storage.BorderItemListProvider
+import org.zawarka.borderOffering.items.storage.BorderItemStorage
 
  class BorderOffering : JavaPlugin() {
 
@@ -15,12 +19,17 @@ import org.zawarka.borderOffering.items.BorderItemListener
      override fun onEnable() {
          instance = this
 
+
+         BorderItemStorage[Bukkit.getWorld("world")!!] =
+             BorderItemStorage(itemsRequired = BorderItemListProvider.getRandomList())
+
          regListeners()
      }
 
      private fun regListeners() {
          registerEvents(WorldBorderMovementListener())
          registerEvents(BorderItemListener())
+         registerEvents(ItemProgressListener())
      }
 
      private fun registerEvents(listener: Listener){

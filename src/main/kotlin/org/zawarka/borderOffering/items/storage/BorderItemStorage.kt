@@ -1,11 +1,30 @@
 package org.zawarka.borderOffering.items.storage
 
 import org.bukkit.Material
+import org.bukkit.World
 
-object BorderItemStorage {
+fun World.getItemStorage() = BorderItemStorage[this]
 
-    private val itemsInBorder = BorderItemList()
-    private var itemsRequired : BorderItemList = BorderItemList.empty();
+class BorderItemStorage(
+    val itemsInBorder : BorderItemList = BorderItemList.empty(),
+    val itemsRequired : BorderItemList = BorderItemList.empty()
+) {
+    companion object {
+        private val storageMap = mutableMapOf<World, BorderItemStorage>()
+
+        operator fun get(world: World): BorderItemStorage = storageMap[world] ?: createEmpty(world)
+
+        fun createEmpty(world: World): BorderItemStorage {
+            BorderItemStorage().apply {
+                storageMap[world] = this
+                return this
+            }
+        }
+
+        operator fun set(world: World, storage: BorderItemStorage) {
+            storageMap[world] = storage
+        }
+    }
 
     fun clearItemsInBorder() {
         itemsInBorder.clear();
@@ -16,7 +35,7 @@ object BorderItemStorage {
     }
 
     fun setReqItems(list: BorderItemList) {
-        itemsRequired = list
+        itemsRequired.clone(list)
     }
 
     fun remainCount(material: Material) : Int{

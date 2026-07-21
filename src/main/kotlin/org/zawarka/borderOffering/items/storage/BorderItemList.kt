@@ -34,4 +34,11 @@ data class BorderItemList(private val map: MutableMap<Material, Int> = mutableMa
     fun clear(){
         map.clear()
     }
+
+    fun clone(list: BorderItemList): BorderItemList{
+        map.clear()
+        map.putAll(list.map)
+
+        return this
+    }
 }

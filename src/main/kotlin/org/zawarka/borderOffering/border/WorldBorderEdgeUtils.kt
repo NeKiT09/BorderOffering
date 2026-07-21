@@ -2,6 +2,7 @@ package org.zawarka.borderOffering.border
 
 import org.bukkit.Location
 import org.bukkit.WorldBorder
+import kotlin.math.abs
 
 /**
  * Основной метод (Extension-функция).
@@ -14,10 +15,8 @@ fun Location.isNearestBorderParallelToX(): Boolean {
 
 object WorldBorderEdgeUtils {
     fun isParallelToX(border: WorldBorder, x: Double, z: Double): Boolean {
-        val center = border.center
-
-        val dx = x - center.x
-        val dz = z - center.z
+        val dx = x - border.centerX()
+        val dz = z - border.centerZ()
 
         return (dx * dx) <= (dz * dz)
     }
@@ -72,6 +71,60 @@ object WorldBorderEdgeUtils {
         }
 
         return locations
+    }
+
+    fun getClosestBorderPoint(border: WorldBorder, loc: Location): Location {
+        val h = border.size * 0.5
+
+        val minX = border.centerX() - h; val maxX = border.centerX() + h
+        val minZ = border.centerZ() - h; val maxZ = border.centerZ() + h
+
+        return if (isParallelToX(border, loc.x, loc.z))
+        // Ближайшая стена параллельна оси X (Z константа)
+            Location(loc.world, loc.x.coerceIn(minX, maxX), loc.y, if (loc.z >= border.centerZ()) maxZ else minZ)
+        else
+        // Ближайшая стена параллельна оси Z (X константа)
+            Location(loc.world, if (loc.x >= border.centerX()) maxX else minX, loc.y, loc.z.coerceIn(minZ, maxZ))
+    }
+
+    fun getClosestBorderPointWithRotation(border: WorldBorder, loc: Location, offset: BorderOffset = BorderOffset()): Location {
+        val h = border.size * 0.5
+
+        val cx = border.centerX()
+        val cz = border.centerZ()
+
+        val minX = cx - h; val maxX = cx + h
+        val minZ = cz - h; val maxZ = cz + h
+
+        if (isParallelToX(border, loc.x, loc.z)) {
+            // Стена параллельна оси X (Северная или Южная)
+            val isSouth = loc.z >= cz
+            val targetZ = if (isSouth) maxZ else minZ
+            val yaw = if (isSouth) 180f else 0f
+
+            // Направление к центру: Юг -> -Z (-1.0), Север -> +Z (1.0)
+            val centerDirZ = if (isSouth) -1.0 else 1.0
+
+            val finalX = loc.x.coerceIn(minX, maxX) + offset.alongWall
+            val finalY = loc.y + offset.vertical
+            val finalZ = targetZ + (offset.towardsCenter * centerDirZ)
+
+            return (Location(border.world, finalX, finalY, finalZ, yaw, 0f))
+        } else {
+            // Стена параллельна оси Z (Западная или Восточная)
+            val isEast = loc.x >= cx
+            val targetX = if (isEast) maxX else minX
+            val yaw = if (isEast) 90f else 270f
+
+            // Направление к центру: Восток -> -X (-1.0), Запад -> +X (1.0)
+            val centerDirX = if (isEast) -1.0 else 1.0
+
+            val finalX = targetX + (offset.towardsCenter * centerDirX)
+            val finalY = loc.y + offset.vertical
+            val finalZ = loc.z.coerceIn(minZ, maxZ) + offset.alongWall
+
+            return (Location(border.world, finalX, finalY, finalZ, yaw, 0f))
+        }
     }
 }
 

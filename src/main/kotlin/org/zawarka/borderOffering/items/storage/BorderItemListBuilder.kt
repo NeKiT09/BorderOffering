@@ -1,10 +1,17 @@
 package org.zawarka.borderOffering.items.storage
 
-object BorderItemListBuilder {
+import org.bukkit.Material
+
+object BorderItemListProvider {
 
 
     fun getRandomList() : BorderItemList {
-        TODO()
+        val list = BorderItemList()
+
+        list.add(Material.CARVED_PUMPKIN, 16)
+        list.add(Material.DIAMOND, 32)
+
+        return list
     }
 
 }
